@@ -8,14 +8,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 import java.util.List;
-
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.support.locators.RelativeLocator.with;
 
 public class Laboration2Tests {
 
@@ -51,7 +48,7 @@ public class Laboration2Tests {
 
         Boolean Display = driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/a")).isDisplayed();
 
-        Assertions.assertTrue(Display);
+        assertTrue(Display);
     }
 
     @Test
@@ -183,7 +180,7 @@ public class Laboration2Tests {
     }
 
     @Test
-    void checkSignLanguageLink(){
+    void ClickAndCheckSignLanguageLink(){
 
         WebDriverWait wait = new WebDriverWait(driver, ofSeconds(30));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[@id=\"__next\"]/div[2]")));
@@ -196,6 +193,11 @@ public class Laboration2Tests {
         WebElement signLanguageLink = driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section[1]/ul/li[2]/a"));
         signLanguageLink.click();
 
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"play_main-content\"]/section")));
+        String websiteTitle = driver.getTitle();
+
+        assertEquals("Teckenspråkstolkade program och program på teckenspråk | SVT Play", websiteTitle, "Title do not match");
+
     }
 
     @Test
@@ -204,15 +206,20 @@ public class Laboration2Tests {
         WebDriverWait wait = new WebDriverWait(driver, ofSeconds(30));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[@id=\"__next\"]/div[2]")));
 
-        WebElement searchBar = driver.findElement(By.xpath("//*[@id=\"search\"]"));
+        WebElement searchBar = driver.findElement(By.cssSelector("input[name='q']"));
         searchBar.click();
 
-        driver.findElement(By.xpath("//*[@id=\"search\"]")).sendKeys("Nyheter");
-        driver.findElement(By.xpath("//*[@id=\"combobox\"]/button")).click();
+        driver.findElement(By.cssSelector("input[name='q']")).sendKeys("Nyheter");
+        driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/ul/li[5]/form/button")).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"play_main-content\"]/section/div/ul/li[1]/article/a")));
 
         driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/section/div/ul/li[1]/article/a")).click();
+
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("sc-6b1c5b48-1")));
+        String ActualTitle = driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/h1/span[2]")).getText();
+
+        assertEquals("NYHETER", ActualTitle, "Text wrong or missing");
     }
 
     @AfterAll
